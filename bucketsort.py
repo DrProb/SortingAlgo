@@ -24,7 +24,23 @@ if visuals:
     krd.set_ylim(0, 1000000)
     krd.yaxis.set_major_formatter(FuncFormatter(float_to_string))
 
-def countingsort(zahlen, balken, stop):
+def insertionsortVis(zahlenn, balken, start, stop):
+    for i in range(start+1, stop):
+        while zahlenn[i] < zahlenn[i-1] and i > start:
+            zahlenn[i], zahlenn[i-1] = zahlenn[i-1], zahlenn[i]
+            i-=1
+            if visuals:
+                updateBalken(balken, zahlenn, -1, None)
+
+def insertionsort(zahlen, balken, stop):
+    for i in range(1, stop):
+        while zahlen[i] < zahlen[i-1] and i > 0:
+            zahlen[i], zahlen[i-1] = zahlen[i-1], zahlen[i]
+            i-=1
+            if visuals:
+                updateBalken(balken, zahlen, i, None)
+
+def bucketsort(zahlen, balken, stop):
     if stop > 1:
         max = zahlen[0]
         min = zahlen[0]
@@ -33,7 +49,45 @@ def countingsort(zahlen, balken, stop):
                 max = zahl
             elif zahl < min:
                 min = zahl
-        k = max-min+1
+        rangee = max-min
+        buckets = stop
+        bucketList = [[] for i in range(buckets)]
+        if visuals:
+            fakezahlen = zahlen.copy()
+            for i, zahl in enumerate(fakezahlen):
+                fakezahlen[i] = 0
+                updateBalken(balken, fakezahlen, -1, None)
+        for i, zahl in enumerate(zahlen):
+            normalized = (zahl-min) / rangee
+            bucketIdx = int(normalized*(buckets-1))
+            bucketList[bucketIdx].append(zahl)
+        if visuals:
+            output = []
+            for bucket in bucketList:
+                for zahl in bucket:
+                    output.append(zahl)
+            if visuals:
+                fakeoutput = [0 for i in range(stop)]
+                for zahl in zahlen:
+                    idx = output.index(zahl)
+                    fakeoutput[idx] = zahl
+                    updateBalken(balken, fakeoutput, -1, None)
+        if visuals:
+            i = 0
+            for bucket in bucketList:
+                insertionsortVis(output, balken, i, i+len(bucket))
+                i += len(bucket)
+            return output
+            
+        else:
+            for bucket in bucketList:
+                bucket = insertionsort(bucket, balken, len(bucket))
+            output = []
+            for bucket in bucketList:
+                for zahl in bucket:
+                    output.append(zahl)
+            return output
+
         
             
 
@@ -60,8 +114,10 @@ def sortedAnimation(balken, zahlen):
         balk.set_color("green")            
 
 startZeit = time.perf_counter()
-zahlen = countingsort(zahlen, balken, len(zahlen))
+zahlen = bucketsort(zahlen, balken, len(zahlen))
 endeZeit = time.perf_counter()
+if visuals:
+    sortedAnimation(balken, zahlen)
 print(zahlen)
 print(f"Sorting Complete: {endeZeit-startZeit}")
 
