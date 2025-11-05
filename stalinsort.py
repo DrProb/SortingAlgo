@@ -33,8 +33,9 @@ def stalinsort(zahlen, balken):
             balken.pop(i)
         else:
             i+=1
-        updateBalken(balken, zahlen, i, None)
-        print(zahlen)
+        if visuals:
+            updateBalken(balken, zahlen, i, None)
+        
 
             
 
