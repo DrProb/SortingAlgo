@@ -30,13 +30,14 @@ if visuals:
         
 
 def schroedingerssort(zahlen, balken):
-    timeS = time.perf_counter()
-    timeE = timeS
-    while timeE-timeS<=0.5:
-        random.shuffle(zahlen)
-        if visuals:
+    if visuals:
+        timeS = time.perf_counter()
+        timeE = timeS
+        while timeE-timeS<=0.5:
+            random.shuffle(zahlen)
             updateBalken(balken, zahlen, None, None)
-        timeE = time.perf_counter()
+            timeE = time.perf_counter()
+    random.shuffle()        
     if visuals:
         plt.cla()
         plt.text(0.5, 0.5, "?", ha="center", va="center", fontsize=180, color="blue", transform=plt.gca().transAxes)
