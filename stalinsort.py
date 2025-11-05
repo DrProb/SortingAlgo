@@ -29,8 +29,9 @@ def stalinsort(zahlen, balken):
     while i < len(zahlen):
         if zahlen[i] < zahlen[i-1]:
             zahlen.pop(i)
-            balken[i].remove()
-            balken.pop(i)
+            if visuals:
+                balken[i].remove()
+                balken.pop(i)
         else:
             i+=1
         if visuals:
